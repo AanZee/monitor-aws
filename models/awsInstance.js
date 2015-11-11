@@ -62,6 +62,7 @@ exports.deleteMarked = function() {
 	r.table('awsInstances')
 	.getAll(true, {index: 'delete'})
 	.delete()
+	.run()
 	.then(function(deleted){
 		// Deleted
 	})

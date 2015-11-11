@@ -62,6 +62,7 @@ exports.deleteMarked = function() {
 	r.table('awsLoadBalancers')
 	.getAll(true, {index: 'delete'})
 	.delete()
+	.run()
 	.then(function(deleted){
 		// Deleted
 	})
