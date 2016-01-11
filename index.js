@@ -331,8 +331,8 @@ insertOrUpdateLoadBalancer = function(loadBalancer, cb) {
 // Specify routes for registering in Monitor through moduleManager
 exports.getRoutes = function () {
 	return [
-		{method: 'GET', pattern: '/module/monitorAws/instaces', function: routeGetAllInstances},
-		{method: 'POST', pattern: '/module/monitorAws/instaces/update', function: routeUpdateInstance},
+		{method: 'GET', pattern: '/module/monitorAws/instances', function: routeGetAllInstances},
+		{method: 'POST', pattern: '/module/monitorAws/instances/update', function: routeUpdateInstance},
 		{method: 'GET', pattern: '/module/monitorAws/loadBalancers', function: routeGetAllLoadBalancers}
 	];
 }
