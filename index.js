@@ -3,6 +3,7 @@ exports.hasCron = true;
 exports.snapshotData = true;
 
 var async = require('async');
+var responseMessaging = require('monitor-response');
 var AWS = require('aws-sdk');
 AWS.config.apiVersions = {elb: '2012-06-01'};
 
@@ -324,5 +325,67 @@ insertOrUpdateLoadBalancer = function(loadBalancer, cb) {
 				callback(null);
 		});
 	}
+
+}
+
+// Specify routes for registering in Monitor through moduleManager
+exports.getRoutes = function () {
+	return [
+		{method: 'GET', pattern: '/module/monitorAws/instaces', function: routeGetAllInstances},
+		{method: 'POST', pattern: '/module/monitorAws/instaces/update', function: routeUpdateInstance},
+		{method: 'GET', pattern: '/module/monitorAws/loadBalancers', function: routeGetAllLoadBalancers}
+	];
+}
+
+// Get all Instances
+var routeGetAllInstances = function(req, res, next) {
+
+	// Protected route (only admins)
+	if(req.user && req.user.role != 'admin')
+		return res.status(401).json(responseMessaging.format(401));
+
+	AwsInstance.getAll(function(err, awsInstances){
+		if(err)
+			res.status(500).json(responseMessaging.format(500, {}, [err]));
+		else
+			res.status(200).json(responseMessaging.format(200, awsInstances));
+	});
+
+}
+
+// Update instance
+var routeUpdateInstance = function(req, res, next) {
+
+	// Protected route (only admins)
+	if(req.user && req.user.role != 'admin')
+		return res.status(401).json(responseMessaging.format(401));
+
+	var id = req.body.id;
+	var data = {
+		monitorClientId: req.body.monitorClientId
+	};
+
+	AwsInstance.update(id, data, function(err, awsInstance){
+		if(err)
+			res.status(500).json(responseMessaging.format(500, {}, [err]));
+		else			
+			res.status(200).json(responseMessaging.format(200, awsInstance));
+	});
+
+};
+
+// Get all LoadBalancers
+var routeGetAllLoadBalancers = function(req, res, next) {
+
+	// Protected route (only admins)
+	if(req.user && req.user.role != 'admin')
+		return res.status(401).json(responseMessaging.format(401));
+
+	AwsLoadBalancer.getAll(function(err, awsLoadBalancers){
+		if(err)
+			res.status(500).json(responseMessaging.format(500, {}, [err]));
+		else
+			res.status(200).json(responseMessaging.format(200, awsLoadBalancers));
+	});
 
 }

@@ -70,3 +70,18 @@ exports.deleteMarked = function() {
 		// Error
 	});
 }
+
+// Get all awsLoadBalancers
+exports.getAll = function(callback){
+	r.table('awsLoadBalancers')
+	.run()
+	.then(function(loadBalancers){
+		if(!loadBalancers)
+			callback('No loadBalancers found!');
+		else
+			callback(null, loadBalancers);
+	})
+	.error(function(err){
+		callback(err);
+	});
+}

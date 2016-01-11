@@ -70,3 +70,48 @@ exports.deleteMarked = function() {
 		// Error
 	});
 }
+
+// Get all awsInstances
+exports.getAll = function(callback){
+	r.table('awsInstances')
+	.run()
+	.then(function(instances){
+		if(!instances)
+			callback('No instances found!');
+		else
+			callback(null, instances);
+	})
+	.error(function(err){
+		callback(err);
+	});
+}
+
+// Update awsInstance
+exports.update = function(id, instance, callback) {
+	instance.updatedAt = Date.now();
+
+	r.table('awsInstances')
+	.get(id)
+	.update(instance, {
+		returnChanges: true
+	})
+	.run()
+	.then(function(newInstance){
+		if(newInstance.errors > 0)
+			callback(newInstance.first_error);
+		
+		else {
+			if(newInstance.unchanged > 0)
+				callback(null, instance);
+			
+			else {
+				newInstance = newInstance.changes[0].new_val;
+				
+				callback(null, newInstance);
+			}
+		}
+	})
+	.error(function(err){
+		callback(err);
+	});
+}
