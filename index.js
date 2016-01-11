@@ -184,7 +184,7 @@ insertOrUpdateInstance = function(instance, cb) {
 
 			else {
 				// Instance is related to monitorClient -> create moduleData and callback
-				if(instance.monitorClientId) {
+				if(instance.monitorClientId && instance.monitorClientId != "") {
 					var monitorClientId = instance.monitorClientId;
 					delete instance.monitorClientId;
 
